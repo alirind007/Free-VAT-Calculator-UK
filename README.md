@@ -1,2 +1,185 @@
 # Free-VAT-Calculator-UK
 Free VAT Calculator UK
+Demo Site https://vatcalculatorsuk.co.uk/
+Calculator code:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            margin-bottom: 20px;
+        }
+
+        .calculator {
+            background-color: #d7e9b9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .calculator label {
+            font-weight: bold;
+        }
+
+        .calculator input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .calculator input[type="text"] {
+            width: 150px;
+            padding: 5px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .calculator input[type="radio"] {
+            margin: 0 5px;
+        }
+
+        .calculator button {
+            padding: 5px 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calculator button:hover {
+            background: #0056b3;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .results table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .results th, .results td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .results th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VAT Calculator</h1>
+        
+        <div class="calculator">
+            <label for="amount">Amount:</label>
+            <input type="text" id="amount" placeholder="Enter amount">
+
+            <div>
+                <input type="radio" id="exclude" name="vatOption" value="exclude">
+                <label for="exclude">exclude VAT</label>
+                <input type="radio" id="add" name="vatOption" value="add">
+                <label for="add">add VAT</label>
+                <input type="number" id="vat-rate" value="20"> %
+                <button onclick="calculateVAT()">Calculate</button>
+            </div>
+
+            <div class="results">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>VAT, %</th>
+                            <th>Operation</th>
+                            <th>VAT Amount</th>
+                            <th>Net Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function calculateVAT() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const vatRate = parseFloat(document.getElementById('vat-rate').value);
+            const vatOption = document.querySelector('input[name="vatOption"]:checked');
+
+            if (isNaN(amount) || isNaN(vatRate) || !vatOption) {
+                alert('Please enter valid numbers for amount and VAT rate, and select an option.');
+                return;
+            }
+
+            const resultsBody = document.getElementById('results-body');
+
+            let newRow = document.createElement('tr');
+
+            let amountCell = document.createElement('td');
+            amountCell.innerText = amount.toFixed(2);
+
+            let vatRateCell = document.createElement('td');
+            vatRateCell.innerText = vatRate.toFixed(2);
+
+            let operationCell = document.createElement('td');
+            operationCell.innerText = vatOption.value;
+
+            let vatAmountCell = document.createElement('td');
+            let netAmountCell = document.createElement('td');
+
+            if (vatOption.value === 'add') {
+                const vatAmount = (amount * vatRate) / 100;
+                const totalWithVAT = amount + vatAmount;
+                vatAmountCell.innerText = vatAmount.toFixed(2);
+                netAmountCell.innerText = totalWithVAT.toFixed(2);
+            } else if (vatOption.value === 'exclude') {
+                const totalWithoutVAT = amount / (1 + (vatRate / 100));
+                const vatAmount = amount - totalWithoutVAT;
+                vatAmountCell.innerText = vatAmount.toFixed(2);
+                netAmountCell.innerText = totalWithoutVAT.toFixed(2);
+            }
+
+            newRow.appendChild(amountCell);
+            newRow.appendChild(vatRateCell);
+            newRow.appendChild(operationCell);
+            newRow.appendChild(vatAmountCell);
+            newRow.appendChild(netAmountCell);
+
+            resultsBody.appendChild(newRow);
+        }
+    </script>
+</body>
+</html>
+
